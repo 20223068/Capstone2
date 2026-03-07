@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8" />
+  <title>퀴즈</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- 기존 외부 CSS 링크 유지 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/story.css') }}" />
+  <noscript>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/noscript.css') }}" />
+  </noscript>
+  
+  <style>
+    body { font-family: Pretendard, Arial, sans-serif; padding: 40px; }
+    h1 { margin-bottom: 10px; font-size: 26px; color:#444; }
+    h2 { margin-top: 30px; color:#444; }
+    textarea, input {
+      width:100%; padding:10px; border-radius:8px;
+      border:1.5px solid #ccc; margin-bottom:10px; font-size:15px; color:#333; 
+    }
+    .readonly { background:#f7f7f7; color:#555; cursor:not-allowed; }
+    .qblock { margin-top: 15px; position: relative; }
+    .q-actions { position:absolute; right:0; top:-6px; }
+    .q-actions button {
+      margin-left:4px; border:none; background:none; color:#666;
+      cursor:pointer; font-size:14px;
+    }
+    .btn {
+      padding:12px 18px; border:none; border-radius:10px;
+      cursor:pointer; margin-right:8px; font-size:15px; color:#333; 
+    }
+    .primary { background:#6294e3; color:white; }
+    .gray { background:#f1f1f1; }
+    .pink { background:#ff7eb6; color:white; }
+    .btn:hover { opacity:0.9; }
+
+    /*질문박스*/
+    .story-box {
+      border: 2px solid #ccc;                /* 테두리 */
+      border-radius: 15px;                     /* 모서리 둥글게 */
+      padding: 20px;                           /* 내부 여백 */
+      margin: 20px 0;                          /* 위아래 간격 */
+      background-color: #fafafa;             /* 연한 배경색 */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 그림자 효과 */
+    }
+
+    .story-box h2 {
+      color: #444;
+      margin-top: 20px;
+    }
+
+    .story-box textarea {
+      width: 100%;
+      height: 100px;
+      resize: none;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #bbb;
+      font-size: 14px;
+    }
+
+    /* 팝업창 스타일 */
+    .popup-overlay {
+      display:none; position:fixed; z-index:200;
+      left:0; top:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.35);
+      justify-content:center; align-items:center;
+    }
+    .popup-box {
+      background:white; border-radius:10px;
+      width:340px; padding:20px;
+      box-shadow:0 5px 15px rgba(0,0,0,0.25);
+      text-align:center;
+      animation: popupShow 0.2s ease-out;
+    }
+    @keyframes popupShow {
+      from { transform:scale(0.9); opacity:0; }
+      to { transform:scale(1); opacity:1; }
+    }
+    .popup-box input {
+      width:90%; padding:8px; font-size:14px;
+      border:1.5px solid #ccc; border-radius:6px; margin-top:12px;
+    }
+    .popup-btns { margin-top:18px; display:flex; justify-content:center; gap:10px; }
+    .popup-btns button { padding:8px 16px; border:none; border-radius:8px; cursor:pointer; font-size:14px; }
+    .popup-btns .confirm { background:#6294e3; color:white; }
+    .popup-btns .cancel { background:#f1f1f1; }
+  </style>
+</head>
+
+<body>
+  
+  <h1>퀴즈 활동</h1>
+  <p id="storyLabel" style="font-weight:500; color:#666;"></p>
+
+  <div class="story-box">
+    <h2>아이 이름:</h2>
+    <input id="childName" placeholder="예: 홍길동" />
+
+    <h2>아이 나이(숫자만 입력):</h2>
+    <input id="childAge" placeholder="예: 7" /> 
+
+    <h2>2. 퀴즈와 답변</h2>
+    <div id="qContainer"></div>
+
+    <button id="addQ" class="btn pink">퀴즈 추가</button>
+  </div>
+
+  <div style="margin-top: 24px;">
+    <button id="saveBtn" class="btn primary">답변 제출하기</button>
+    <button id="backBtn" class="btn gray">이전 페이지로</button>
+    <button id="homeBtn" class="btn gray">홈으로</button>
+  </div>
+
+  <!-- 팝업창 -->
+  <div id="popup" class="popup-overlay">
+    <div class="popup-box">
+      <h3 id="popupTitle" style="color:#000;">새로운 질문 추가</h3>
+      <input id="popupInput" type="text" placeholder="질문을 입력하세요" />
+      <div class="popup-btns">
+        <button id="popupConfirm" class="confirm">확인</button>
+        <button id="popupCancel" class="cancel">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const story = params.get("story") || "";
+    document.getElementById("storyLabel").textContent = `동화: ${story}`;
+
+    const container = document.getElementById("qContainer");
+    const popup = document.getElementById("popup");
+    const popupInput = document.getElementById("popupInput");
+    const popupTitle = document.getElementById("popupTitle");
+    let editTarget = null;
+
+    // 기본 질문 3개 생성
+    async function loadDefaultQuestions() {
+      let q1 = `${story}을(를) 읽고 느낀 점이 무엇인가요?`;
+      let q2 = "동화 속 인물에게 해주고 싶은 말을 적어보세요.";
+      let q3 = `내가 만약 '${story}' 속에 들어가게 된다면, 이야기가 그 후에 어떻게 진행될지 상상해보세요.`;
+
+      try {
+        const age = document.getElementById("childAge")?.value || 7; // 기본값 7세
+        const res = await fetch(`/quiz_auto_question_dynamic?story=${encodeURIComponent(story)}&age=${age}`);
+        const data = await res.json();
+        if (data.question && data.question.trim().length > 3) {
+          q1 = data.question.trim();
+        }
+      } catch (e) {
+        console.warn("자동질문 생성 실패:", e);
+      }
+      // 빈칸 방지
+      if (!q1 || q1.trim().length === 0) {
+        q1 = `${story}을(를) 읽고 느낀 점이 무엇인가요?`;
+      }
+
+      [q1, q2, q3].forEach((text, idx) => {
+        const div = document.createElement("div");
+        div.className = "qblock";
+        div.innerHTML = `
+          <input class="q readonly" value="${text}" readonly>
+          <textarea class="a" placeholder="답변 입력..."></textarea>
+        `;
+        container.appendChild(div);
+      });
+    }
+    window.addEventListener("DOMContentLoaded", loadDefaultQuestions);
+
+    // addQuestion 함수 (수정/삭제 가능)
+    function addQuestion(text = "", readonly = true, editable = true, isParent = false) {
+      const div = document.createElement("div");
+      div.className = "qblock";
+      div.setAttribute("data-parent", isParent ? "1" : "0");
+      div.innerHTML = `
+        <input class="q readonly" value="${text}" readonly>
+        <textarea class="a" placeholder="답변 입력..."></textarea>
+        ${editable ? `
+          <div class="q-actions">
+            <button class="editQ">✏️ 수정</button>
+            <button class="delQ">🗑️ 삭제</button>
+          </div>` : ''}
+      `;
+      container.appendChild(div);
+
+      if (editable) {
+        const editBtn = div.querySelector(".editQ");
+        const delBtn = div.querySelector(".delQ");
+        const input = div.querySelector(".q");
+
+        editBtn.onclick = () => {
+          editTarget = input;
+          popupTitle.textContent = "퀴즈 수정";
+          popupInput.value = input.value;
+          popup.style.display = "flex";
+          popupInput.focus();
+        };
+
+        delBtn.onclick = () => {
+          if (confirm("이 퀴즈 질문을 삭제하시겠습니까?")) div.remove();
+        };
+      }
+    }
+
+    // 팝업 관련 (부모 질문 추가용)
+    document.getElementById("addQ").onclick = () => {
+      editTarget = null;
+      popupTitle.textContent = "새로운 퀴즈 추가";
+      popupInput.value = "";
+      popup.style.display = "flex";
+      popupInput.focus();
+    };
+
+    document.getElementById("popupCancel").onclick = () => popup.style.display = "none";
+
+    document.getElementById("popupConfirm").onclick = () => {
+      const newText = popupInput.value.trim();
+      if (!newText) return alert("퀴즈를 입력해주세요.");
+
+      if (editTarget) {
+        editTarget.value = newText;
+      } else {
+        addQuestion(newText, true, true, true);
+      }
+      popup.style.display = "none";
+    };
+
+    window.addEventListener("keydown", e => {
+      if (e.key === "Escape") popup.style.display = "none";
+    });
+
+    // 답변 제출
+    document.getElementById("saveBtn").onclick = async () => {
+      const child_name = document.getElementById("childName").value || null;
+      const child_age = parseInt(document.getElementById("childAge").value) || null;
+
+      const qs = Array.from(document.querySelectorAll(".q"));
+      const as = Array.from(document.querySelectorAll(".a"));
+      const q1_text = qs[0]?.value;
+      const q2_text = qs[1]?.value;
+      const q3_text = qs[2]?.value;
+      const a1_answer = as[0]?.value.trim() || "";
+      const a2_answer = as[1]?.value.trim() || "";
+      const a3_answer = as[2]?.value.trim() || "";
+
+      if (!child_age) return alert("아이의 나이를 입력해주세요.");
+
+      const payload = {
+        story_title: story,
+        child_name,
+        child_age,
+        q1_text,
+        q2_text,
+        q3_text,
+        a1_answer,
+        a2_answer,
+        a3_answer
+      };
+
+      const res = await fetch("/quiz_activity/save", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!data.id) return alert("저장 실패");
+
+      alert("답변이 저장되고 GPT 피드백이 생성됩니다.");
+      window.location.href = `/quiz_feedback/show/${data.id}`;
+    };
+
+    document.getElementById("backBtn").onclick = () => {
+      window.location.href = `/Quiz?story=${encodeURIComponent(story)}`;
+    };
+
+    document.getElementById("homeBtn").onclick = () => {
+      window.location.href = "/";
+    };
+  </script>
+
+</body>
+
+</html>

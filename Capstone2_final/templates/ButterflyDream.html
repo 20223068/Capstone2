@@ -1,0 +1,937 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+
+<head>
+    <title>Butterfly's Dream</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/story.css') }}" />
+    <noscript><link rel="stylesheet" href="{{ url_for('static', filename='assets/css/noscript.css') }}" /></noscript>
+</head>
+
+<body>
+    <!--질문 버튼-->
+    <div style="text-align: right; margin-bottom: 10px;">
+    <button id="toggleQuestions" class="nav-button">📋 추천 질문들 보기</button>
+    </div>
+
+    <div id="questionsContainer" style="display: none; background: #ffffff; padding: 20px; border-radius: 10px; margin-top: 10px;">
+    <h3 style="margin-top: 0; color: black;">이런 질문들은 어때요?</h3>
+    <ul id="questionsList" style="list-style-type: disc; padding-left: 20px; color: black;">
+        {% if questions %}
+            {% for q in questions %}
+                <li>{{ q.questions }}</li> 
+            {% endfor %}
+        {% endif %}
+    </ul>
+    </div>
+    
+<div id="wrapper">
+    <!-- 홈으로 가기 버튼 -->
+    <button id="homeButton" class="home-button">HOME</button>
+
+    <script>
+        document.getElementById("homeButton").addEventListener("click", function () {
+            window.location.href = "/";  // Flask 메인페이지 라우트로 이동
+        });
+    </script>
+
+
+    <div id="storySection">
+        <!-- 첫 번째 슬라이드 -->
+        <div class="story-slide active-slide">
+
+            <div class="page-number">페이지 1</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_cover.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+                    <h3>나비의 꿈</h3>
+                    <p>소파 방정환</p>
+                </div>
+
+                <div class="audio-controls" style="margin-top: 10px;">
+                    <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_00.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 두 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 2</div>
+
+            <div class="slide-container">
+                
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_1.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text-qa">
+
+                    <div class="text">
+
+                        <div class="audio-button-container">
+                            <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                        </div>
+
+                        <p> 어느 들에 어여쁜 나비가 한 마리 살고 있었습니다. 나비는 날마다 아침 때부터 꽃밭에서 동산으로, 동산에서 꽃밭으로 따뜻한 봄볕을 쪼이고 날아
+                            다니면서 온종일 춤을 추어, 여러 가지 꽃들을 위로해 주며 지내었습니다.</p>
+                    </div>
+                    <div class="qa-section">
+                            <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                            <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                            <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                            <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_01.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 세 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 3</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_2.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 하루는 어느 포근한 잔디밭에 앉아서 따뜻한 볕을 쪼이면서, 이런 생각을 하였습니다. 여신께서는 나를 보시고,
+                        ‘즐겁게 춤을 추어 많은 꽃들을 기껍게 해 주는 것이 너의 직책이다!’ 하셨습니다.
+                        ‘나는 오늘 지금까지 모든 꽃들을 모두 기껍게 해 주기 위하여, 내 힘껏
+                        하여 왔다! 그러나, 어떤 일이든지 좀더 좋은 일을 했으면 좋겠다.’
+                        고 생각하였습니다. 그 후부터는 날마다 그 ‘더 좋은 일’만 생각하고 있
+                        었습니다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>  
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_02.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 네 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 4</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_3.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p>어느 날 밤이었습니다. 나비는 그 날도 온종일 재미롭게 춤을 추었기 때문에, 저녁때가 되니까 몹시 고단하여서, 
+                        일찍이 배추밭 노오란 꽃가지에 누워서, 콜콜 가늘게 코를 골면서 잠이 들었습니다. 그리고, 이런 꿈을 꾸었습니다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_03.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 다섯 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 5</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_4.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p>나비는 전과 같이 이리저리 펄펄 날아다니노라니까, 어느 틈에 전에 보지 못하던 모르는 곳에 이르렀습니다. 
+                        거기는 시골같이 쓸쓸스런 곳인데, 나직한 언덕 위에 조그마한 집이 한 채 있었습니다.
+                        “에그? 어떻게 이런 곳으로 왔을까!” 하고, 나비는 이상해 했습니다. </p>
+                    
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_04.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 여섯 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 6</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_5.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 그리고, 언뜻 보니까, 그 조그마한 집 뒤뜰에는 동백나무가 서 있고, 나무에는 빨간 동백꽃이 많이 피어 있으므로, 
+                        나비는 그 꽃 위에 앉아서 날개를 쉬고 있었습니다.
+                        따뜻하게 볕만 퍼지고 동네도 조용하고, 이 조그만 집도 사람 없는 집같이 조용하였습니다.
+                        그러더니, 이 빈 집같이 조용하던 집에서 나직하고 조심스런 소녀의 소리가 들리었습니다.
+
+                        “이애 민수야, 얼른 나아야 약을 먹고 얼른 나아야 아니하니? 네가 이렇게 앓아 누웠기만 하면, 누나가 쓸쓸하지 않으냐?”
+                        분명히 병든 동생의 머리맡에 앉아서 근심하는 소리였습니다. </p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_05.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 일곱 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 7</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_6.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p>그러니까, 그 병든 동생이 기운 없는 말로 대답하는 것이 들렸습니다.
+                        “누나, 나는 약 먹기 싫어요! 써서 어떻게 먹우. 약보다도 나는 동산에가고 싶어요. 살구꽃하고 복사꽃이 피었겠지요. 
+                        응? 누나야, 작년처럼 동산에 올라가서 새 우는 소리도 듣고, 나비가 날아다니는 것을 보고 싶어요.
+                        아아, 어서 동산에를 가 보았으면!”</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_06.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 여덟 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 8</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_7.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 나비는 이 가느다란 불쌍한 소리를 듣고, 퍽 마음이 슬펐습니다.
+                        잠이 깨어 눈이 뜨였습니다. 벌써 날이 밝아서 세상이 훤하였습니다. 나비는 지난 밤에 꾼 꿈을 다시 처음부터 차근차근히 생각하였습니다. 
+                        생각할수록 어디인지 분명히 그런 불쌍한 어린 남매가 있는 것같이 생각되었습니다.
+                        그래서, 나비는 가끔가끔 놀러 오는 동무 꾀꼬리에게 찾아가서, 그 꿈 이야기를 하였습니다. </p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_07.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 아홉 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 9</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_8.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p>그러니까, 마음 착한 꾀꼬리도 그 말을 듣고,
+                    “그럼 분명히 그런 불쌍한 남매가 어딘지 있는 모양일세.” 하였습니다.
+                    그리고 다시,
+                    “그 앓는 동생이 새 소리를 듣고 싶고, 나비를 보고 싶드라고 하더라니,
+                    우리가 어디인지는 모르지만 둘이 찾아가 보세그려.” 하였습니다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_08.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 열 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 10</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_9.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 나비와 꾀꼬리는 꿈에 본 집을 찾으러 나섰습니다. 그러나, 어디 어느 곳에 그런 집이 있는지 아는 수가 있겠습니까. 하는 수 없이 쩔쩔매다가, 
+                        마침 높이 떠서 날아오는 기러기를 불렀습니다.
+                        서늘한 나라를 찾아서 북쪽으로 향하고 먼 길을 가던 기러기는 꾀꼬리가부르는 소리를 듣고 내려왔습니다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_09.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 열한 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 11</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_10.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> “남쪽에서 오시는 길에 혹시 언덕 위에 조그만 집에 어린 동생이 앓아 드러누웠고, 누이가 울고 있는 불쌍한 남매를 보지 못하였습니까? 우리는 그집을 찾아가려고 그럽니다.”
+                        하고, 꿈꾼 이야기를 자세히 하였습니다. 기러기는 그 말을 듣고,
+                        “아아, 알고말고요. 착한 남매가 불쌍하게 근심을 하고 있습니다. 어서 가보십시오. 
+                        여기서 저어 남쪽으로 쭈욱 가서, 아마 십 리는 될 거요. 여기서 곧장 가면, 그 언덕 있는 곳이 보입니다. 어서 가 보십시오.”
+                        하고 아르켜 주고 북쪽 나라로 갈 길이 멀고 급하다고 인사하고 갔습니다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_10.mp3') }}"></audio>
+            </div>
+        </div>
+
+        <!-- 열두 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 12</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_11.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p>나비와 꾀꼬리는 기꺼워서 한숨에 갈 듯이 남쪽으로 날아갔습니다. 한참이나 가니까, 언덕이 보였습니다. 
+                        그 언덕 위에는 꿈에 보던 그 조그만 집이 있고, 뒤뜰에는 꿈에 앉았던 동백꽃도 피어 있었습니다. 어떻게도 반가운
+                        지, “여기다, 여기다.” 하고 나비는 꾀꼬리를 데리고 동백꽃 나무에 앉아서,
+                        “아가씨 아가씨, 문 열어 주십시오.”하고 불렀습니다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_11.mp3') }}"></audio>
+            </div>
+        </div>
+
+        <!-- 열세 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 13</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_12.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 그러나, 아무리 불러도 방 속에서도 아무 대답도 없었습니다.
+                        그러니까 꾀꼬리가, “아무리 부른들 알아들을 리가 있나.”
+                        하고, 이번에는 자기가 그 어여쁜 목소리로, “꾀꼴 꾀꼴 꾀꼴꼴…….”
+                        하고 노래를 불렀습니다. 그러니까, 방 속에서 깜짝 놀래는 듯한 소리가 나더니, 방문이 드르륵 열렸습니다.
+                        꾀꼬리는 그냥 자꾸 노래를 불렀습니다. 방문을 열고 내다보는 사람은 열두 살쯤 되어 보이는 얌전한 소녀였습니다. </p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_12.mp3') }}"></audio>
+            </div>
+        </div>
+
+        <!-- 열네 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 14</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_13.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p>꾀꼬리와 나비가 나란히 앉았는 것을 보고, 몹시도 반가워하면서, 마치 반가운 사람이나 만난 듯이 기뻐서 어찌할 줄을 모르며, 
+                        사람에게 하는 말 같이,
+                        “아이구 고마워라, 꾀꼬리도 나비도 왔구먼……. 민수가 어떻게 너희들을보고 싶어했는지 모른단다.”
+                        하고는, “에그, 민수가 보게 방에까지 들어왔으면 좋으련만…….” 하였습니다.
+                        나비와 꾀꼬리는 후루루 날아서 방으로 들어갔습니다. </p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_13.mp3') }}"></audio>
+            </div>
+        </div>
+
+        <!-- 열다섯 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 15</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_14.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 방이라야 좁다란 한 칸 방인데, 아홉 살쯤된 어린 사내아이가 마르고 파아란 얼굴에 눈을 감고
+                        누워서 잠이 든 것 같기도 하고, 죽은 것 같기도 하였습니다.
+                        “민수야, 눈을 떠 보아라. 꾀꼬리와 나비가 왔다.”
+                        하면서, 소녀는 동생을 부드럽게 흔들어서 깨웠습니다.
+                        꾀꼬리는 목소리를 곱게 내어 재미있고 씩씩하게,
+                       “꾀꼴 꾀꼴 꾀꼴꼴…….” 하고, 노래를 정성껏 불렀습니다. 
+                    </p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_14.mp3') }}"></audio>
+            </div>
+        </div>
+
+        <!-- 열여섯 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 16</div>
+
+            <div class="slide-container">
+                <!-- <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_15.png') }}">
+                </div> -->
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 나비는 그 노래에 장단을 맞춰서, 재주껏 화려하게 춤을 덩싱덩실 추면서, 병든 어린이의 자리를 빙빙 돌았습니다.
+                        그야말로 세상에서 들을 수 없는 훌륭한 음악이요, 진기한 무도이었습니다.
+                        거슴프레하게 떴던 병든 소년의 두 눈은 점점 크게 떠지면서 생기가 나면서 춤추며 돌아다니는 나비를 따르고, 
+                        귀는 아름다운 꾀꼬리의 노랫소리를정성스럽게 듣고 있었습니다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_15.mp3') }}"></audio>
+            </div>
+        </div>
+
+        <!-- 열일곱 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 17</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_16.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 꾀꼬리와 나비는 열심히 열심히 재주와 정성을 다하여, 노래를 부르고 춤을 추었습니다.
+                        그러니까 병든 소년의 눈을 점점 점점 광채가 나기 시작하고, 
+                        파아란 얼굴에는 붉은 혈기가 점점 점점 돌아오더니, 이윽고는 긴긴 겨울이 지나도록 한번도 보지 못한 웃음의 빛이, 
+                        그의 눈에도 입에도 보이기 시작하였습니다.
+                        그것을 보고 꾀꼬리와 나비는 기운껏 기운껏 피곤하기까지 노래와 춤을 추었습니다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_16.mp3') }}"></audio>
+            </div>
+        </div>
+
+        <!-- 열여덟 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 18</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_17.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 그 날 밤에는 소년의 따뜻한 주선으로, 그 집 처마 끝 동백나무 그늘에서 자고, 
+                        그 이튿날도 방에 들어가서 노래를 부르고 춤을 추고 하였습니다.
+                        어린이의 병은 차츰 나아지고, 기운과 정신이 나날이 새로워졌습니다.
+                        나비와 꾀꼬리는 그 이튿날도 또 그 이튿날도 쉬지 않고 노래와 춤으로 병든 소년을 위로하였습니다.
+                    </p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_17.mp3') }}"></audio>
+            </div>
+        </div>
+
+        <!-- 열아홉 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 19</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/butterfly/butterfly_18.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p>이렇게 이레 동안을 지나자, 소년은 아주 쾌하게 병이 나아서, 누나의 손을 잡고, 
+                        동산에도 가고 뜰에도 가서, 꾀꼬리와 나비와 재미있게 뛰놀 수 있게 되었습니다.
+                    </p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_18.mp3') }}"></audio>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-wrapper">
+        <button class="nav-button" onclick="prevSlide()">이전 이야기</button>
+        <button class="nav-button" onclick="nextSlide()">다음 이야기</button>
+    </div>
+    
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    let currentSlide = 0;
+    let currentAudio = null;
+    const storyTitle = "나비의 꿈";
+
+    // 슬라이드 보이기 + 오디오 자동 재생
+    function showSlide(index) {
+        const slides = document.querySelectorAll('.story-slide');
+
+        slides.forEach((slide, i) => {
+            const audio = slide.querySelector('audio');
+
+            if (i === index) {
+                slide.classList.add('active-slide');
+                if (audio) {
+                    if (currentAudio && currentAudio !== audio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                    }
+                    currentAudio = audio;
+                }
+            } else {
+                slide.classList.remove('active-slide');
+                if (audio) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            }
+        });
+
+        currentSlide = index;
+    }
+
+    function nextSlide() {
+    const slides = document.querySelectorAll('.story-slide');
+    if (currentSlide < slides.length - 1) {
+        currentSlide++;
+        showSlide(currentSlide);
+    } else {
+        // 마지막 페이지에서 퀴즈 페이지로 이동
+        const storyTitle = "나비의 꿈";
+        window.location.href = `/Quiz?story=${encodeURIComponent(storyTitle)}`;
+    }
+}
+    // 이전 슬라이드로 이동
+    function prevSlide() {
+        const slides = document.querySelectorAll('.story-slide');
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    // 수동 오디오 재생
+    function playSlideAudio(button) {
+        const slide = button.closest('.story-slide');
+        const audio = slide.querySelector('audio');
+
+        if (audio) {
+            if (currentAudio && currentAudio !== audio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            audio.play();
+            currentAudio = audio;
+        }
+    }
+
+    // 음성 질문 기능
+    function startListening(button) {
+        const resultDiv = button.closest('.qa-section').querySelector('.qa-result');
+
+        if (!('webkitSpeechRecognition' in window)) {
+            resultDiv.textContent = '이 브라우저에서는 음성 인식을 지원하지 않아요 😢';
+            return;
+        }
+
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = 'ko-KR';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        resultDiv.textContent = '말씀해주세요... 🎙️';
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            resultDiv.textContent = `질문: "${transcript}"`;
+
+            fetch('/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question: transcript, slide_index: currentSlide, story_title: storyTitle })
+            })
+            .then(res => res.json())
+            .then(data => {
+                resultDiv.textContent += `\n답변: ${data.answer}`;
+            })
+            .catch(err => {
+                resultDiv.textContent += `\n(답변 중 오류 발생 😢)`;
+                console.error(err);
+            });
+
+            recognition.stop();
+        };
+
+        recognition.onerror = function(event) {
+            resultDiv.textContent = '음성 인식 중 오류 발생: ' + event.error;
+            recognition.stop();
+        };
+
+        recognition.start();
+    }
+
+    // 텍스트 질문 기능
+    function openTextModal(button) {
+        const qaSection = button.closest('.qa-section');
+        const resultDiv = qaSection.querySelector('.qa-result');
+
+        const question = prompt("텍스트로 질문을 입력하세요:");
+        if (!question) return;
+
+        resultDiv.innerHTML = `<div class="question">질문: "${question}"</div>`;
+
+        fetch('/ask', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: question, slide_index: currentSlide, story_title: storyTitle })
+        })
+        .then(res => res.json())
+        .then(data => {
+            resultDiv.innerHTML += `<div class="answer">답변: ${data.answer}</div>`;
+        })
+        .catch(err => {
+            resultDiv.innerHTML += `<br>(답변 중 오류 발생 😢)`;
+            console.error("Error fetching answer:", err);
+        });
+    }
+
+    // 음성으로 답변 들려주기
+    async function speakAnswer(button) {
+        const resultDiv = button.closest('.qa-section').querySelector('.qa-result');
+        const text = resultDiv?.innerText.replace("질문:", "").replace("답변:", "").trim();
+        if (!text) {
+            alert("먼저 질문하고 답변을 확인해주세요!");
+            return;
+        }
+
+        const ttsRes = await fetch('/tts', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ text })
+        });
+
+        if (!ttsRes.ok) {
+            alert("음성 생성 실패");
+            return;
+        }
+
+        const audioBlob = await ttsRes.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        audio.play();
+    }
+
+    // 추천 질문 토글 기능
+    document.getElementById("toggleQuestions").addEventListener("click", async function () {
+        const container = document.getElementById("questionsContainer");
+        const list = document.getElementById("questionsList");
+
+        // 현재 슬라이드 인덱스를 기준으로 페이지 번호 결정
+        const slides = document.querySelectorAll(".story-slide");
+        let currentPage = 0;
+        slides.forEach((slide, idx) => {
+            if (slide.classList.contains("active-slide")) {
+                currentPage = idx + 1; // 페이지 번호는 1부터 시작
+            }
+        });
+
+        // 열려있으면 닫기
+        if (container.style.display === "block") {
+            container.style.display = "none";
+            return;
+        }
+
+        // 서버에서 top3 질문 불러오기
+        try {
+            const res = await fetch(`/top3_questions?page=${currentPage}`);
+        
+            // 응답이 JSON이 아닐 경우 처리
+            if (!res.ok) {
+                console.error("❌ 서버 응답 에러:", res.status);
+                const errorText = await res.text();
+                console.error("🔎 응답 내용:", errorText);
+                alert("추천 질문을 불러오지 못했습니다.");
+                return;
+            }
+
+            const data = await res.json();
+            console.log("✅ 추천 질문 응답 데이터:", data);
+
+            list.innerHTML = ""; // 기존 질문 초기화
+
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach(q => {
+                    const li = document.createElement("li");
+                    if (q.question) {
+                        li.textContent = q.question;
+                    } else {
+                        li.textContent = "❓ 알 수 없는 질문 형식입니다.";
+                        console.warn("⚠️ 예상과 다른 데이터 구조:", q);
+                    }
+                    list.appendChild(li);
+                });
+            } else {
+                const li = document.createElement("li");
+                li.textContent = "추천 질문이 아직 없어요.";
+                list.appendChild(li);
+            }
+
+            container.style.display = "block";
+
+        } catch (err) {
+            console.error("❌ 추천 질문 불러오기 오류:", err);
+            alert("추천 질문을 불러오지 못했습니다.");
+        }
+    });
+
+    // 초기 슬라이드 보여주기
+    showSlide(currentSlide);
+
+    // 전역 함수로 등록 (HTML 버튼에서 사용 가능하게)
+    window.nextSlide = nextSlide;
+    window.prevSlide = prevSlide;
+    window.startListening = startListening;
+    window.openTextModal = openTextModal;
+    window.playSlideAudio = playSlideAudio;
+    window.speakAnswer = speakAnswer;
+    window.loadSuggestedQuestions = loadSuggestedQuestions;
+});
+
+</script>
+
+</body>
+
+</html>

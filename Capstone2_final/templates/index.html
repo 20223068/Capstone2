@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Main</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/story.css') }}" />
+    <noscript><link rel="stylesheet" href="{{ url_for('static', filename='assets/css/noscript.css') }}" /></noscript>
+</head>
+	
+<body class="is-preload">
+
+	<!-- Wrapper -->
+	<div id="wrapper">
+
+		<!-- Main -->
+		<section id="main">
+
+			<!-- Items -->
+			<div class="items">
+
+				<div class="item intro span-1">
+					<h1>세계 동화</h1>
+					<p>World<br />Fairy Tales</p>
+				</div>
+
+				<article class="item thumb span-2">
+					<h2>독후활동</h2> <!--10.21 수정-->
+					<a href="#" onclick="openPopup('/Quiz_home', '독후활동'); return false;">
+						<img src="{{ url_for('static', filename='images/book.jpeg') }}">
+					</a>
+				</article>
+				
+				<article class="item thumb span-2">
+					<h2>나비의 꿈</h2>
+					<a href="#" onclick="openPopup('/ButterflyDream', '나비의 꿈'); return false;">
+						<img src="{{ url_for('static', filename='images/butterfly/butterfly_cover.png') }}">
+					</a>
+				</article>
+
+				<article class="item thumb span-2">
+					<h2>성냥팔이 소녀</h2>
+					<a href="#" onclick="openPopup('/LittleMatch', '성냥팔이 소녀'); return false;">
+						<img src="{{ url_for('static', filename='images/LittleMatch/LittleMatch_cover.png') }}">
+					</a>
+				</article>
+<!--
+				<article class="item thumb span-2">
+					<h2>로미오와 줄리엣</h2>
+					<a href="#" onclick="openPopup('RomeoJuliet.html', '로미오와 줄리엣'); return false;">
+						<img src="{{ url_for('static', filename='images/thumbs/03.jpg') }}">
+					</a>
+				</article>
+
+				<article class="item thumb span-2">
+					<h2>신데렐라</h2>
+					<a href="#" onclick="openPopup('Cinderella.html', '신데렐라'); return false;">
+						<img src="{{ url_for('static', filename='images/thumbs/04.jpg') }}">
+					</a>
+				</article>
+
+				<article class="item thumb span-2">
+					<h2>잠자는 숲속의 공주</h2>
+					<a href="#" onclick="openPopup('SleepingBeauty.html', '잠자는 숲속의 공주'); return false;">
+						<img src="{{ url_for('static', filename='images/thumbs/05.jpg') }}">
+					</a>
+				</article>
+
+				<article class="item thumb span-2">
+					<h2>라푼젤</h2>
+					<a href="#" onclick="openPopup('Rapunzel.html', '라푼젤'); return false;">
+						<img src="{{ url_for('static', filename='images/thumbs/06.jpg') }}">
+					</a>
+				</article>
+
+				<article class="item thumb span-2">
+					<h2>백설공주</h2>
+					<a href="#" onclick="openPopup('SnowWhite.html', '백설공주'); return false;">
+						<img src="{{ url_for('static', filename='images/thumbs/07.jpg') }}">
+					</a>
+				</article>
+
+				<article class="item thumb span-2">
+					<h2>인어공주</h2>
+					<a href="#" onclick="openPopup('Mermaid.html', '인어공주'); return false;">
+						<img src="{{ url_for('static', filename='images/thumbs/08.jpg') }}">
+					</a>
+				</article>
+			-->
+			</div>
+		</section>
+
+		<!-- 팝업 -->
+		<div id="popup" style="display:none; position:fixed; top:30%; left:50%; transform:translate(-50%, -50%);
+		background:#fff; padding:20px; box-shadow:0 0 10px rgba(0,0,0,0.3); z-index:1000; border-radius:8px; text-align:center;">
+			<p id="popup-text"  style="color: black;">를 선택하셨나요?</p>
+			<button onclick="goToPage()" style="margin: 10px;">예</button>
+			<button onclick="closePopup()" style="margin: 10px;">아니오</button>
+		</div>
+
+
+		<!-- 배경 어둡게 -->
+		<div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+		background:rgba(0,0,0,0.5); z-index:999;" onclick="closePopup()"></div>
+
+		<!-- Footer -->
+		<section id="footer">
+			<!--
+			<section>
+				<p>This is <strong>Parallelism</strong>, a responsive portfolio site template by <a href="http://html5up.net">HTML5 UP</a>. Free for personal
+				and commercial use under the <a href="http://html5up.net/license">Creative Commons Attribution</a> license.</p>
+			</section>
+			-->
+
+			<section>
+				<ul class="icons">
+					<li><a href="#" class="icon brands fa-github" style="color: black;"><span class="label">Github</span></a></li>
+					<li><a href="#" class="icon solid fa-envelope" style="color: black;"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+				</ul>
+			</section>
+		</section>
+
+	</div>
+
+	<!-- Scripts -->
+	<script src="../assets/js/jquery.min.js"></script>
+	<script src="../assets/js/jquery.poptrox.min.js"></script>
+	<script src="../assets/js/browser.min.js"></script>
+	<script src="../assets/js/breakpoints.min.js"></script>
+	<script src="../assets/js/util.js"></script>
+	<script src="../assets/js/main.js"></script>
+
+	<!-- 팝업용 스크립트 -->
+	<script>
+
+		window.addEventListener("load", () => {
+			document.body.classList.remove("is-preload");
+		});
+
+		let targetPage = "";
+
+		function openPopup(pageUrl, title) {
+			targetPage = pageUrl;
+			document.getElementById("popup-text").textContent = `"${title}" 를 선택하셨나요?`;
+			document.getElementById("popup").style.display = "block";
+			document.getElementById("overlay").style.display = "block";
+		}
+
+		function closePopup() {
+			document.getElementById("popup").style.display = "none";
+			document.getElementById("overlay").style.display = "none";
+		}
+
+		function goToPage() {
+			window.location.href = targetPage;
+		}
+	</script>
+
+</body>
+
+</html>

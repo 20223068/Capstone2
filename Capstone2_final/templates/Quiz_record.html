@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8" />
+  <title>퀴즈 기록</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- 기존 외부 CSS 링크 유지 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/story.css') }}" />
+  <noscript>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/noscript.css') }}" />
+  </noscript>
+  <style>
+    body { font-family: Pretendard, Arial, sans-serif; padding: 40px; }
+    h1 { margin-bottom: 10px; font-size: 28px; color: #333; }
+    h2 { margin-top: 24px; color: #444; }
+    h3 { margin-top: 16px; color: #555; }
+    .group-box {
+      background: #fff;
+      border:1px solid #e0e0e0;
+      border-radius:12px;
+      padding:20px;
+      margin-top:20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      color:black;
+    }
+    table { width:100%; border-collapse: collapse; margin-top: 10px; font-size:15px; color:black;  background: #fff;}
+    th, td { border:1px solid #eaeaea; padding:8px; text-align:left; }
+    th { background:#fafafa; }
+    .row { margin-top:20px; }
+    .btn { padding:10px 16px; border:none; border-radius:10px; cursor:pointer; background:#f1f1f1; font-size:15px; }
+    .btn:hover { background:#e5e5e5; }
+    .small { color:#777; font-size:13px; }
+    /* 부모 질문 하이라이트 */
+    .parent-row { background:#fff9f9; }
+
+    /* 추가: 피드백 항목 표시 */
+    .feedback-box { margin-top:10px; background:#fafaff; border-radius:8px; padding:12px 16px; }
+    .fb-item { margin:4px 0; font-size:15px; color:#333; }
+    .fb-stars { color:#f4b400; margin-right:4px; }
+    .fb-summary { margin-top:8px; font-size:14px; color:#555; line-height:1.5; border-top:1px solid #eee; padding-top:8px; }
+  </style>
+</head>
+
+<body>
+  {% if not story %}
+    <h1>퀴즈 기록</h1>
+    <p>동화가 선택되지 않았습니다. <a href="/Quiz_home">여기</a>에서 동화를 선택하세요.</p>
+
+  {% else %}
+    <h1>퀴즈 기록    "{{ story }}"</h1>
+    <p class="small">각 기록은 질문·답변, LLM 피드백을 한 세트로 표시합니다.</p>
+
+    {% if groups|length == 0 %}
+      <p>아직 기록이 없습니다. <a href="/Quiz?story={{ story|urlencode }}">퀴즈 페이지</a>에서 활동을 먼저 해보세요.</p>
+    {% endif %}
+
+    {% for g in groups %}
+      <div class="group-box">
+        <h2>🕓 {{ g.created_at }}</h2>
+
+        {% if g.child_name and g.child_age %}
+          <p style="color:#222;"><b>아이 이름:</b> {{ g.child_name }} / <b>나이:</b> {{ g.child_age }}세</p>
+        {% elif g.child_name %}
+          <p style="color:#222;"><b>아이 이름:</b> {{ g.child_name }}</p>
+        {% elif g.child_age %}
+          <p><b>아이 나이:</b> {{ g.child_age }}세</p>
+        {% endif %}
+
+        {% if g.questions and g.questions|length > 0 %}
+          <h3>퀴즈와 답변</h3>
+          <table>
+            <tr>
+              <th>퀴즈</th>
+              <th>답변</th>
+              <th>퀴즈 유형</th>
+            </tr>
+            {% for i in range(g.questions|length) %}
+              {% set q = g.questions[i] %}
+              <tr class="{% if q.is_parent %}parent-row{% endif %}">
+                <td>{{ q.text }}</td>
+                <td>
+                  {% if g.answers and i < g.answers|length %}
+                    {{ g.answers[i] }}
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+                <td>
+                  {% if q.is_parent %} + 추가 퀴즈{% else %} 기본 퀴즈{% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
+
+        {% if g.feedback %}
+          <h3>LLM 피드백</h3>
+
+          <!-- 컬럼별 표시 -->
+          <div class="feedback-box">
+            <div class="fb-item">
+              <b>이해력:</b>
+              <span class="fb-stars">{{ '⭐' * (g.feedback.comprehension_score or 0) }}{{ '☆' * (5 - (g.feedback.comprehension_score or 0)) }}</span>
+              {{ g.feedback.comprehension_comment or '' }}
+            </div>
+            <div class="fb-item">
+              <b>표현력:</b>
+              <span class="fb-stars">{{ '⭐' * (g.feedback.expression_score or 0) }}{{ '☆' * (5 - (g.feedback.expression_score or 0)) }}</span>
+              {{ g.feedback.expression_comment or '' }}
+            </div>
+            <div class="fb-item">
+              <b>창의성:</b>
+              <span class="fb-stars">{{ '⭐' * (g.feedback.creativity_score or 0) }}{{ '☆' * (5 - (g.feedback.creativity_score or 0)) }}</span>
+              {{ g.feedback.creativity_comment or '' }}
+            </div>
+
+            {% if g.feedback.overall_comment %}
+              <div class="fb-summary">
+                <b>전체 평가</b><br>{{ g.feedback.overall_comment }}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="row">
+      <button class="btn" onclick="location.href='/Quiz_home'">다른 동화 선택</button>
+      <button class="btn" onclick="location.href='/'">홈으로</button>
+    </div>
+  {% endif %}
+</body>
+
+</html>

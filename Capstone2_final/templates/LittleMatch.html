@@ -1,0 +1,669 @@
+<!DOCTYPE HTML>
+<html lang="ko">
+
+<head>
+    <title>Butterfly's Dream</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/story.css') }}" />
+    <noscript><link rel="stylesheet" href="{{ url_for('static', filename='assets/css/noscript.css') }}" /></noscript>
+</head>
+
+<body>
+    <!--질문 버튼-->
+    <div style="text-align: right; margin-bottom: 10px;">
+    <button id="toggleQuestions" class="nav-button">📋 추천 질문들 보기</button>
+    </div>
+
+    <div id="questionsContainer" style="display: none; background: #ffffff; padding: 20px; border-radius: 10px; margin-top: 10px;">
+    <h3 style="margin-top: 0; color: black;">이런 질문들은 어때요?</h3>
+    <ul id="questionsList" style="list-style-type: disc; padding-left: 20px; color: black;">
+        {% if questions %}
+            {% for q in questions %}
+                <li>{{ q.questions }}</li> 
+            {% endfor %}
+        {% endif %}
+    </ul>
+    </div>
+    
+<div id="wrapper">
+    <!-- 홈으로 가기 버튼 -->
+    <button id="homeButton" class="home-button">HOME</button>
+
+    <script>
+        document.getElementById("homeButton").addEventListener("click", function () {
+            window.location.href = "/";  // Flask 메인페이지 라우트로 이동
+        });
+    </script>
+
+
+    <div id="storySection">
+        <!-- 첫 번째 슬라이드 -->
+        <div class="story-slide active-slide">
+
+            <div class="page-number">페이지 1</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/LittleMatch/LittleMatch_cover.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+                    <h3>성냥팔이 소녀</h3>
+                    <p>김선희 역</p>
+                </div>
+
+                <div class="audio-controls" style="margin-top: 10px;">
+                    <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_00.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 두 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 2</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/LittleMatch/LittleMatch_1.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text-qa">
+
+                    <div class="text">
+
+                        <div class="audio-button-container">
+                            <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                        </div>
+
+                        <p> 그날은 정말 추운 날이었어요. 눈이 내려서 온 세상이 하얗게 변하고, 어두운 밤이 찾아왔죠. 
+                            그날이 그 해의 마지막 날이었어요. 그날 거리에는 작은 소녀가 있었어요. 소녀는 모자도 없이, 맨발로 거리를 걷고 있었죠. 
+                            아침에 집을 나설 땐 신발을 신고 있었지만, 이제 그 신발은 소녀에게 너무 컸어요. 엄마의 신발이었거든요. 
+                            길을 건너다 신발 한 짝을 잃어버렸어요. 마차가 지나가면서 신발이 날아가버렸거든요. 
+                            나머지 한 짝은 어떤 소년이 가져갔어요. 그 소년은 나중에 아이를 낳으면 그 신발로 요람을 만들겠다고 했대요. 
+                            그래서 소녀는 맨발로 추운 길을 걸어가고 있었어요. 두 발은 얼어버렸고, 온몸이 떨리고 있었죠.</p>
+                    </div>
+                    <div class="qa-section">
+                            <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                            <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                            <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                            <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_01.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 세 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 3</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/LittleMatch/LittleMatch_2.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 낡은 앞치마에 들고 가는 성냥갑 몇 개가 있었다. 소녀는 성냥 하나를 손으로 들어 내밀었다. 
+                        하지만 하루 종일 소녀한테 성냥을 사려는 사람은 아무도 없었다. 단 한 사람도 1센트를 주지 않았다.
+                        추위와 배고픔으로 벌벌 떨면서 소녀는 기어갔다. 비참한 그림이다, 가엾은 소녀! 
+                        눈꽃이 소녀의 긴 머리카락 위로 떨어져 내려 목을 구불구불 휘감았다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>  
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_02.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 네 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 4</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <<img src="{{ url_for('static', filename='images/LittleMatch/LittleMatch_3.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p>창문으로 불빛이 새어 나오고 거위를 굽는 근사한 냄새도 흘러나왔다. 한 해의 마지막 날이었다. 
+                        그렇다, 소녀는 그 생각이 간절했다!
+                        집 두 채 사이 모퉁이에 다른 집보다 길 쪽으로 더 튀어나온 곳이 있었는데 소녀는 그곳에 앉아서 발을 끌어당겨 몸을 웅크렸다. 
+                        점점 더 몸이 추웠다. 하지만 집에 갈 엄두가 나지 않았다. 
+                        
+                        성냥을 팔지 못했기에, 1센트도 벌지 못했기에 아버지는 분명 이 소녀를 흠씬 두들겨 팰 것이다. 
+                        게다가 집은 너무 추웠다. 지붕 말고는 불어대는 바람을 가릴 게 없었다. 
+                        제일 크게 갈라진 틈을 지푸라기와 천 조각으로 막았는데도 그랬다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_03.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 다섯 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 5</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/LittleMatch/LittleMatch_4.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p>소녀는 다시 성냥을 하나 꺼내 벽에 쓱 긋고 성냥을 밝혔어요. 
+                        이번에는 성냥불이 아주 밝게 타오르며, 방 안을 비추었어요. '우와, 멋지다!' 소녀는 방 안을 들여다봤어요. 
+                        식탁 위에는 하얀 식탁보가 덮여 있었고, 그 위에 구운 거위가 놓여 있었어요. 
+                        거위에서 김이 모락모락 올라왔어요. 그러자 그 거위가 접시에서 펄쩍 뛰어 내려 소녀에게 다가왔어요! 
+                        '거위가 나에게 올 거야!' 소녀는 그렇게 상상했어요. 
+                        하지만 불꽃이 꺼지고, 거위는 사라졌어요. 다시 차가운 벽만 남았어요. </p>
+                    
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_04.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 여섯 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 6</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/LittleMatch/LittleMatch_5.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 소녀가 그 불꽃 위로 손을 올리자, 이상한 빛이 일었다! 
+                        정말이지 반짝반짝 빛나는 황동 손잡이와 뚜껑이 달린 거대한 쇠 난로 앞에 자신이 앉아 있는 것 같았다. 
+                        불이 얼마나 멋지게 타오르는지! 얼마나 편안한지! 소녀가 발도 녹이려 발을 내밀었다. 
+                        문득 작은 불꽃이 꺼지고 난로는 사라졌다. 손안에는 다 타버린 성냥만 남아 있었다. </p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_05.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 일곱 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 7</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/LittleMatch/LittleMatch_6.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p>소녀는 성냥을 하나 더 벽에 그었다. 성냥은 밝게 타올랐다. 
+                        불빛이 벽을 비추자, 하늘하늘한 막처럼 투명해져서 방 안을 훤히 들여다볼 수가 있었다. 
+                        탁자에 눈처럼 하얀 식탁보가 덮여있고, 그 위에 찬란하게 빛나는 저녁 식사가 차려있다. 
+                        사과와 자두로 속을 채워 구운 거위에서 먹음직스럽게 김이 모락모락 피어올랐다. 
+                        더더군다나 그 거위가 접시에서 펄쩍 뛰어내려 칼과 포크를 가슴에 품고 이 어린 소녀에게 곧장 걸어왔다. 
+                        문득 성냥이 꺼졌다. 두껍고 차가운 벽만 보일뿐이었다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_06.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 여덟 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 8</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/LittleMatch/LittleMatch_7.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 성냥 하나를 더 밝혔다. 문득 소녀가 몹시도 아름다운 크리스마스트리 아래 앉아 있다. 
+                        작년 크리스마스에 부자 상인의 집 유리문을 통해 본 것보다 훨씬 더 아름다웠다. 
+                        수천 개의 초가 초록 나뭇가지 위에서 활활 타오르고 판화 가게에 있는 것과 같은 알록달록한 그림이 소녀를 내려다보았다.
+                        어린 소녀는 두 손을 내밀었다. 문득 성냥이 꺼졌다. 크리스마스 불빛은 더 높이 올라갔다. </p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_07.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 아홉 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 9</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/LittleMatch/LittleMatch_8.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p>크리스마스 불빛은 더 높이 올라갔다. 불빛은 이제 하늘에 환한 별처럼 보였다. 
+                        별 하나가 길게 줄을 이루며 떨어져 내렸다. 소녀는 생각했다.
+                        ‘지금 누군가가 저세상으로 가고 있구나.’ 
+                        지금은 저세상으로 간, 누구보다 소녀를 사랑했던 할머니는 별이 떨어져 내리면 영혼 하나가 하늘로 올라간 것이라고 말해 주었다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_08.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 열 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 10</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/LittleMatch/LittleMatch_9.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 성냥을 하나 더 벽에 그었다. 다시 환하게 불꽃이 일었다. 
+                        그 불꽃 속에 할머니가 친절하고도 사랑스럽게, 맑고 환하게 빛을 내며 서 있었다. 
+                        소녀가 외쳤다. “할머니! 아, 저를 데려가 주세요! 성냥이 꺼지면 할머니가 사라지리란 걸 알아요. 
+                        할머니는 따뜻한 난로처럼 사라질 거예요. 저 맛있는 거위와 아름다운 크리스마스트리처럼요!”</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_09.mp3') }}"></audio>
+            </div>
+        </div>
+    
+        <!-- 열한 번째 슬라이드 -->
+        <div class="story-slide">
+            <div class="page-number">페이지 11</div>
+
+            <div class="slide-container">
+                <div class="image">
+                    <img src="{{ url_for('static', filename='images/LittleMatch/LittleMatch_10.png') }}">
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="text">
+
+                    <div class="audio-button-container">
+                        <button class="play-audio-button" onclick="playSlideAudio(this)">들려줘 🎵</button>
+                    </div>
+
+                    <p> 소녀는 할머니와 함께 있고 싶었기에 재빨리 성냥 꾸러미를 모두 밝혔다. 
+                        성냥이 무척이나 환하게 빛나서 낮보다 더 밝아졌다. 할머니가 그렇게나 웅장하고 아름다운 적이 없었다. 
+                        할머니가 소녀를 품에 안았다. 두 사람은 땅 위로 밝고도 경쾌하게 날아올랐다. 아주, 아주 높이. 
+                        저 위 추위도 배고픔도 존재하지 않는 세계로 날아갔다. 
+                        그리고 더 이상 추운 거리에는 아무도 성냥팔이 소녀가 있었다는 흔적조차 남지 않았다.</p>
+
+                    <div class="qa-section">
+                        <button class="nav-button" onclick="startListening(this)">음성으로 질문</button>
+                        <button class="nav-button" onclick="openTextModal(this)">텍스트 질문</button>
+                        <button class="nav-button" onclick="speakAnswer(this)">음성으로 듣기 🔊</button>
+                        <div class="qa-result" style="margin-top: 10px; color: #333;"></div>
+                    </div>
+                </div>
+
+                <audio src="{{ url_for('static', filename='audio/nabi_page_10.mp3') }}"></audio>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-wrapper">
+        <button class="nav-button" onclick="prevSlide()">이전 이야기</button>
+        <button class="nav-button" onclick="nextSlide()">다음 이야기</button>
+    </div>
+    
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    let currentSlide = 0;
+    let currentAudio = null;
+    const storyTitle = "성냥팔이 소녀";
+
+    // 슬라이드 보이기 + 오디오 자동 재생
+    function showSlide(index) {
+        const slides = document.querySelectorAll('.story-slide');
+
+        slides.forEach((slide, i) => {
+            const audio = slide.querySelector('audio');
+
+            if (i === index) {
+                slide.classList.add('active-slide');
+                if (audio) {
+                    if (currentAudio && currentAudio !== audio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                    }
+                    currentAudio = audio;
+                }
+            } else {
+                slide.classList.remove('active-slide');
+                if (audio) {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }
+            }
+        });
+
+        currentSlide = index;
+    }
+
+    function nextSlide() {
+    const slides = document.querySelectorAll('.story-slide');
+    if (currentSlide < slides.length - 1) {
+        currentSlide++;
+        showSlide(currentSlide);
+    } else {
+        // 마지막 페이지에서 퀴즈 페이지로 이동
+        const storyTitle = "성냥팔이 소녀";
+        window.location.href = `/Quiz?story=${encodeURIComponent(storyTitle)}`;
+    }
+}
+
+    // 이전 슬라이드로 이동
+    function prevSlide() {
+        const slides = document.querySelectorAll('.story-slide');
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    // 수동 오디오 재생
+    function playSlideAudio(button) {
+        const slide = button.closest('.story-slide');
+        const audio = slide.querySelector('audio');
+
+        if (audio) {
+            if (currentAudio && currentAudio !== audio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            audio.play();
+            currentAudio = audio;
+        }
+    }
+
+    // 음성 질문 기능
+    function startListening(button) {
+        const resultDiv = button.closest('.qa-section').querySelector('.qa-result');
+
+        if (!('webkitSpeechRecognition' in window)) {
+            resultDiv.textContent = '이 브라우저에서는 음성 인식을 지원하지 않아요 😢';
+            return;
+        }
+
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = 'ko-KR';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        resultDiv.textContent = '말씀해주세요... 🎙️';
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            resultDiv.textContent = `질문: "${transcript}"`;
+
+            fetch('/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question: transcript, slide_index: currentSlide, story_title: storyTitle })
+            })
+            .then(res => res.json())
+            .then(data => {
+                resultDiv.textContent += `\n답변: ${data.answer}`;
+            })
+            .catch(err => {
+                resultDiv.textContent += `\n(답변 중 오류 발생 😢)`;
+                console.error(err);
+            });
+
+            recognition.stop();
+        };
+
+        recognition.onerror = function(event) {
+            resultDiv.textContent = '음성 인식 중 오류 발생: ' + event.error;
+            recognition.stop();
+        };
+
+        recognition.start();
+    }
+
+    // 텍스트 질문 기능
+    function openTextModal(button) {
+        const qaSection = button.closest('.qa-section');
+        const resultDiv = qaSection.querySelector('.qa-result');
+
+        const question = prompt("텍스트로 질문을 입력하세요:");
+        if (!question) return;
+
+        resultDiv.innerHTML = `<div class="question">질문: "${question}"</div>`;
+
+        fetch('/ask', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question: question, slide_index: currentSlide, story_title: storyTitle })
+        })
+        .then(res => res.json())
+        .then(data => {
+            resultDiv.innerHTML += `<div class="answer">답변: ${data.answer}</div>`;
+        })
+        .catch(err => {
+            resultDiv.innerHTML += `<br>(답변 중 오류 발생 😢)`;
+            console.error("Error fetching answer:", err);
+        });
+    }
+
+    // 음성으로 답변 들려주기
+    async function speakAnswer(button) {
+        const resultDiv = button.closest('.qa-section').querySelector('.qa-result');
+        const text = resultDiv?.innerText.replace("질문:", "").replace("답변:", "").trim();
+        if (!text) {
+            alert("먼저 질문하고 답변을 확인해주세요!");
+            return;
+        }
+
+        const ttsRes = await fetch('/tts', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ text })
+        });
+
+        if (!ttsRes.ok) {
+            alert("음성 생성 실패");
+            return;
+        }
+
+        const audioBlob = await ttsRes.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        audio.play();
+    }
+
+    // 추천 질문 토글 기능
+    document.getElementById("toggleQuestions").addEventListener("click", async function () {
+        const container = document.getElementById("questionsContainer");
+        const list = document.getElementById("questionsList");
+
+        // 현재 슬라이드 인덱스를 기준으로 페이지 번호 결정
+        const slides = document.querySelectorAll(".story-slide");
+        let currentPage = 0;
+        slides.forEach((slide, idx) => {
+            if (slide.classList.contains("active-slide")) {
+                currentPage = idx + 1; // 페이지 번호는 1부터 시작
+            }
+        });
+
+        // 열려있으면 닫기
+        if (container.style.display === "block") {
+            container.style.display = "none";
+            return;
+        }
+
+        // 서버에서 top3 질문 불러오기
+        try {
+            const res = await fetch(`/top3_questions?page=${currentPage}`);
+        
+            // 응답이 JSON이 아닐 경우 처리
+            if (!res.ok) {
+                console.error("❌ 서버 응답 에러:", res.status);
+                const errorText = await res.text();
+                console.error("🔎 응답 내용:", errorText);
+                alert("추천 질문을 불러오지 못했습니다.");
+                return;
+            }
+
+            const data = await res.json();
+            console.log("✅ 추천 질문 응답 데이터:", data);
+
+            list.innerHTML = ""; // 기존 질문 초기화
+
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach(q => {
+                    const li = document.createElement("li");
+                    if (q.question) {
+                        li.textContent = q.question;
+                    } else {
+                        li.textContent = "❓ 알 수 없는 질문 형식입니다.";
+                        console.warn("⚠️ 예상과 다른 데이터 구조:", q);
+                    }
+                    list.appendChild(li);
+                });
+            } else {
+                const li = document.createElement("li");
+                li.textContent = "추천 질문이 아직 없어요.";
+                list.appendChild(li);
+            }
+
+            container.style.display = "block";
+
+        } catch (err) {
+            console.error("❌ 추천 질문 불러오기 오류:", err);
+            alert("추천 질문을 불러오지 못했습니다.");
+        }
+    });
+
+    // 초기 슬라이드 보여주기
+    showSlide(currentSlide);
+
+    // 전역 함수로 등록 (HTML 버튼에서 사용 가능하게)
+    window.nextSlide = nextSlide;
+    window.prevSlide = prevSlide;
+    window.startListening = startListening;
+    window.openTextModal = openTextModal;
+    window.playSlideAudio = playSlideAudio;
+    window.speakAnswer = speakAnswer;
+    window.loadSuggestedQuestions = loadSuggestedQuestions;
+});
+
+</script>
+
+</body>
+
+</html>

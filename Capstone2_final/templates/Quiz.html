@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8" />
+  <title>퀴즈 선택</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 기존 외부 CSS 링크 유지 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/story.css') }}" />
+  <noscript>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/noscript.css') }}" />
+  </noscript>
+
+  <style>
+    body { font-family: Pretendard, Arial, sans-serif; padding: 40px; text-align:center; }
+    h1 { margin-bottom: 24px; }
+    .btn { display:block; margin:12px auto; padding:14px 18px; width:280px; border:none; border-radius:10px; font-size:16px; cursor:pointer; }
+    .primary { background:#6294e3; color:#fff; }
+    .pink { background:#ff7eb6; color:#fff; }
+    .gray { background:#f1f1f1; }
+    .row { margin-top: 24px; }
+  </style>
+
+</head>
+
+<body>
+  <h1>퀴즈 활동을 선택해주세요</h1>
+  <p id="storyLabel"></p>
+
+  <div class="row">
+    <button id="btnQA" class="btn primary">동화에 대한 퀴즈</button>
+    <button id="btnRecord" class="btn gray">이 동화의 기록 보기</button>
+  </div>
+
+  <div class="row">
+    <button id="btnHome" class="btn gray">홈으로</button>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const story = params.get("story") || "";
+    const label = document.getElementById("storyLabel");
+    label.textContent = story ? `선택된 동화: ${story}` : "동화 정보가 없습니다.";
+
+    document.getElementById("btnQA").onclick = () => {
+      if (!story) return alert("동화 정보가 없습니다.");
+      window.location.href = `/Quiz_activity?story=${encodeURIComponent(story)}`;
+    };
+    document.getElementById("btnRecord").onclick = () => {
+      if (!story) return alert("동화 정보가 없습니다.");
+      window.location.href = `/Quiz_record?story=${encodeURIComponent(story)}`;
+    };
+    document.getElementById("btnHome").onclick = () => {
+      window.location.href = `/`;
+    };
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8" />
+  <title>퀴즈 기록 보기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- 기존 외부 CSS 링크 유지 -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/story.css') }}" />
+  <noscript>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/noscript.css') }}" />
+  </noscript>
+
+  <style>
+    body { font-family: Pretendard, Arial, sans-serif; padding: 40px; text-align: center; background-color: #fff;}
+    h1 { margin-bottom: 20px; font-size: 28px; color: #333; }
+    p { color: #555; margin-bottom: 30px; }
+    .story-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-bottom: 40px; }
+    .story-btn { padding: 14px 22px; border: none; border-radius: 10px; background-color: #6294e3; color: white; font-size: 16px; cursor: pointer; transition: background 0.2s ease; }
+    .story-btn:hover { background-color: #6294e3; }
+    .empty { color: #888; font-size: 15px; margin-bottom: 30px; }
+    .btn-home { padding: 12px 20px; border: none; border-radius: 10px; cursor: pointer; background: #f1f1f1; color: #333; font-size: 15px; }
+    .btn-home:hover { background: #e8e8e8; }
+  </style>
+
+</head>
+
+<body>
+  <h1>퀴즈 기록 보기</h1>
+  <p>기록을 보고 싶은 동화를 선택하세요.</p>
+
+  {% if stories|length == 0 %}
+    <p class="empty">아직 퀴즈 기록이 없습니다. 먼저 퀴즈를 진행해보세요!</p>
+  {% else %}
+    <div class="story-list">
+      {% for s in stories %}
+        <button class="story-btn" onclick="viewStory('{{ s }}')">{{ s }}</button>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <button id="homeBtn" class="btn-home">홈으로</button>
+
+  <script>
+    function viewStory(title) {
+      window.location.href = `/Quiz_record?story=${encodeURIComponent(title)}`;
+    }
+    document.getElementById("homeBtn").onclick = () => {
+      window.location.href = `/`;
+    };
+  </script>
+
+</body>
+
+</html>

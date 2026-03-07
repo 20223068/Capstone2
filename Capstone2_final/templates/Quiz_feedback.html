@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8" />
+  <title>GPT 피드백 결과</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/story.css') }}" />
+  <noscript>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/noscript.css') }}" />
+  </noscript>
+
+  <style>
+    body { font-family: Pretendard, Arial, sans-serif; padding: 40px;  }
+    h1 { color:#333; margin-bottom:20px; }
+    .card { background:white; border-radius:12px; padding:24px; box-shadow:0 3px 8px rgba(0,0,0,0.08); max-width:700px; margin:auto; }
+    .meta { color:#777; font-size:14px; margin-bottom:10px; }
+    .feedback { white-space:pre-line; font-size:16px; line-height:1.6; color:#444; margin-top:20px; }
+    .btns { margin-top:30px; display:flex; justify-content:center; gap:12px; }
+    .btn { padding:10px 18px; border:none; border-radius:8px; cursor:pointer; font-size:15px; }
+    .btn.primary { background:#6294e3; color:white; }
+    .btn.gray { background:#f1f1f1; }
+
+    /* 별점 평가 영역 */
+    .evaluation { margin-top:25px; border-top:1px solid #eee; padding-top:20px; }
+    .eval-item { font-size:16px; margin-bottom:8px; color:#444; }
+    .stars { color:#f4b400; font-size:18px; margin-left:8px; }
+    .summary { margin-top:15px; background:#f8f8ff; border-radius:8px; padding:12px 16px; font-size:15px; line-height:1.5; color:#555; }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    {% if feedback %}
+      <h1>LLM 피드백 결과</h1>
+      <div class="meta">
+        <b>동화:</b> {{ feedback.story_title }}<br>
+        {% if feedback.child_name %}<b>아이 이름:</b> {{ feedback.child_name }}<br>{% endif %}
+        {% if feedback.child_age %}<b>아이 나이:</b> {{ feedback.child_age }}세<br>{% endif %}
+      </div>
+
+      <!-- 평가 결과 영역 수정 -->
+      <div class="evaluation">
+        <div class="eval-item">
+          이해력:
+          <span class="stars">{{ '⭐' * (feedback.comprehension_score or 0) }}{{ '☆' * (5 - (feedback.comprehension_score or 0)) }}</span>
+          <span id="comprehensionScore">({{ feedback.comprehension_score or 0 }}/5)</span><br>
+          <span>{{ feedback.comprehension_comment or '' }}</span>
+        </div>
+        <div class="eval-item">
+          표현력:
+          <span class="stars">{{ '⭐' * (feedback.expression_score or 0) }}{{ '☆' * (5 - (feedback.expression_score or 0)) }}</span>
+          <span id="expressionScore">({{ feedback.expression_score or 0 }}/5)</span><br>
+          <span>{{ feedback.expression_comment or '' }}</span>
+        </div>
+        <div class="eval-item">
+          창의성:
+          <span class="stars">{{ '⭐' * (feedback.creativity_score or 0) }}{{ '☆' * (5 - (feedback.creativity_score or 0)) }}</span>
+          <span id="creativityScore">({{ feedback.creativity_score or 0 }}/5)</span><br>
+          <span>{{ feedback.creativity_comment or '' }}</span>
+        </div>
+
+        <!-- 전체 평가 -->
+        <div class="summary" id="overallFeedback">
+          <b>전체적인 평가:</b><br>
+          {{ feedback.overall_comment or "전체 평가를 불러올 수 없습니다." }}
+        </div>
+      </div>
+
+    {% else %}
+      <h1>피드백을 찾을 수 없습니다.</h1>
+      <p>퀴즈를 먼저 진행해주세요.</p>
+    {% endif %}
+
+    <div class="btns">
+      <button class="btn primary" onclick="goQuiz()">다시 하기</button>
+      <button class="btn gray" onclick="location.href='/'">홈으로</button>
+    </div>
+  </div>
+
+  <script>
+    function goQuiz() {
+      const story = "{{ feedback.story_title if feedback else '' }}";
+      if (story) window.location.href = `/Quiz?story=${encodeURIComponent(story)}`;
+      else window.location.href = "/";
+    }
+  </script>
+
+</body>
+
+</html>
