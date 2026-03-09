@@ -103,7 +103,8 @@ project
 
 ---
 
-## 참고 문헌
+<details>
+<summary>참고문헌 (References)</summary>
 
 [1] 나미영. (2010).  
 상호작용적 동화 읽어주기 활동이 유아의 이야기 이해력과 기억력에 미치는 영향.  
@@ -144,3 +145,5 @@ AI 기반 한국어 글쓰기 자동 피드백의 질 평가 연구.
 [10] Liu, Z., Ping, W., Roy, R., Xu, P., Lee, C., Shoeybi, M., & Catanzaro, B. (2024).  
 ChatQA: Surpassing GPT-4 on conversational QA and RAG.  
 *Proceedings of the 38th International Conference on Neural Information Processing Systems (NeurIPS 2024).*
+
+<\details>
