@@ -1,5 +1,5 @@
 # LLM 기반 상호작용형 동화 서비스
-**LLM-Based Interactive Fairy Tale Service**
+**(LLM-Based Interactive Fairy Tale Service)**
 
 > 동화를 읽으며 실시간 질문, 독후 활동, 학습 피드백이 가능한 AI 기반 아동 인터랙션 학습 시스템  
 
