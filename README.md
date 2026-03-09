@@ -58,8 +58,8 @@ project
 |---|---|
 | Backend | Flask |
 | Database | MySQL |
-| Embedding Model | SentenceTransformers |
-| LLM | Gemma |
+| Embedding Model | SentenceTransformers(all-MiniLM-L6-v2) |
+| LLM | Gemma(gemma-3n-e4b) |
 | Vector Search | Cosine Similarity |
 | Frontend | HTML / JavaScript |
 | Speech Recognition | Web Speech API |
